@@ -1,8 +1,15 @@
+import { useHistory } from "react-router";
+
+
 
 const Login: React.FC = () => {
+    const history = useHistory()
+    const handleLogin = () => { 
+        history.push('home')
+    }
     return (
-        <div className="h-screen w-full items-center flex ">
-            <div className="card w-full md:w-1/3  mx-auto bg-base-100 ">
+        <div className="h-screen w-full items-center flex bg-gray-50 ">
+            <div className="card w-full md:w-1/3  mx-auto ">
 
                 <div className="card-body gap-6">
                     <h2 className="card-title">Login</h2>
@@ -36,7 +43,7 @@ const Login: React.FC = () => {
                     </div>
 
                     {/* BUTTON LOGIN */}
-                    <div className="card-actions justify-end">
+                    <div className="card-actions justify-end" onClick={handleLogin}>
                         <button className="btn btn-primary rounded-xl w-full">Login</button>
                     </div>
                 </div>
