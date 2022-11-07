@@ -1,0 +1,6 @@
+{
+	"appId": "io.ionic.starter",
+	"appName": "ionic_dewisri",
+	"webDir": "build",
+	"bundledWebRuntime": false
+}
