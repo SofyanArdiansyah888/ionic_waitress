@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import { useHistory } from "react-router";
 
 const Navbar: React.FC<{ isBackButton: boolean }> = ({ isBackButton }) => {
@@ -9,7 +10,7 @@ const Navbar: React.FC<{ isBackButton: boolean }> = ({ isBackButton }) => {
     <div className="navbar bg-primary ">
       {isBackButton && <div className="flex-none text-white" onClick={handleBack}><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg></div>}
       <div className="flex-1 text-white">
-        <a className="btn btn-ghost normal-case text-xl">CT POS</a>
+        <a href="#" className="btn btn-ghost normal-case text-xl">CT POS</a>
       </div>
       <div className="flex-none">
         {/* <div className="dropdown dropdown-end">
@@ -32,7 +33,7 @@ const Navbar: React.FC<{ isBackButton: boolean }> = ({ isBackButton }) => {
         <div className="dropdown dropdown-end">
           <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
             <div className="w-10 rounded-full">
-              <img src="https://placeimg.com/80/80/people" />
+              <img src="https://placeimg.com/80/80/people" alt="Profile" />
             </div>
           </label>
           <ul tabIndex={0} className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">

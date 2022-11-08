@@ -1,9 +1,10 @@
 import { useIonModal } from "@ionic/react";
-import { useHistory } from "react-router";
 import Navbar from "../../components/Navbar";
 import Menu from "../menu/Menu";
 
 export default function Meja() {
+  
+
   const handleDismiss = () => {
     dismiss();
   };

@@ -1,4 +1,3 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 import { useHistory } from 'react-router';
 import Navbar from '../../components/Navbar';
 

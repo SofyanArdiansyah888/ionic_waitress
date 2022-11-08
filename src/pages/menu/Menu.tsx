@@ -1,11 +1,42 @@
+import { useIonAlert } from "@ionic/react";
 import React, { useState } from "react";
 const Menu: React.FC<{ onDismiss: () => void; }> = ({ onDismiss }) => {
+  const [presentAlert] = useIonAlert();
   const [tab, setTab] = useState(0)
+
+  const handleClick = (data:any) => {
+    console.log(data)
+    presentAlert({
+      header: 'Detail Produk',
+      buttons: [{
+        text:'Ok',
+        handler: (alertData) => {
+          alert(JSON.stringify(alertData))
+        }
+
+      }],
+      inputs: [
+        {
+          name:'quantity',
+          type: 'number',
+          placeholder: 'Jumlah',
+          min: 1,
+          max: 100,
+        },
+        {
+          name:'description',
+          type: 'textarea',
+          placeholder: 'Keterangan...',
+        },
+      ],
+    
+    })
+  }
+
   return (
     <>
       <SearchBar />
-
-      <div className="flex self-center ">
+      <div className="flex self-center  ">
         <div className="tabs my-4">
           <button className={`tab tab-lifted text-lg ${tab === 0 && "tab-active"}`} onClick={() => setTab(0)} >Menu</button>
           <button className={`tab tab-lifted text-lg  ${tab === 1 && "tab-active"}`} onClick={() => setTab(1)}>Manual</button>
@@ -14,12 +45,12 @@ const Menu: React.FC<{ onDismiss: () => void; }> = ({ onDismiss }) => {
 
 
 
-      <div className="container mx-auto h-screen overflow-scroll ">
+      <div className="container mx-auto h-screen overflow-scroll  ">
         {
           tab === 0 &&
           <>
             {[1, 2, 3, 4, 5].map((data, index) =>
-              <div key={index} className=' flex flex-row gap-4 relative m-2 bg-gray-50 hover:bg-secondary rounded-md p-2 -z-10'>
+              <div key={index} className=' flex flex-row gap-4 relative m-2 bg-gray-50 hover:bg-secondary rounded-md p-2 z-[9999]' onClick={() => handleClick(data)}>
                 <img className="h-[48px] w-[48px] rounded-md" src="https://d1sag4ddilekf6.azureedge.net/compressed_webp/items/IDITE2021080412405056421/detail/menueditor_item_89773e1c5ff14a66a5a2c8a8daa92a25_1628080769929268301.webp" alt="Gambar Makanan" />
                 <div className="text-left">
                   <h6 className='font-semibold text-md'>Ikan Pepes</h6>
