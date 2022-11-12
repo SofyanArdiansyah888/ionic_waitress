@@ -1,14 +1,19 @@
+import { QueryClient, QueryClientProvider, useQuery } from "react-query";
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
-import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import reportWebVitals from './reportWebVitals';
+import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 
 const container = document.getElementById('root');
 const root = createRoot(container!);
+const queryClient = new QueryClient()
+
 root.render(
   <React.StrictMode>
-    <App />
+    <QueryClientProvider client={queryClient}>
+      <App />
+    </QueryClientProvider>
   </React.StrictMode>
 );
 

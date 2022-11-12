@@ -1,10 +1,20 @@
 import { useIonAlert } from "@ionic/react";
 import React, { useState } from "react";
+import { useQuery } from "react-query";
+import { ApiService } from "../services/api.service";
+import EmptyBox from "./EmptyBox";
+import SkeletonList from "./SkeletonList";
+import { Key } from "react";
+import { formatRupiah } from "../utils/formatter";
+
+
+const apiService = new ApiService();
 const Menu: React.FC<{ onDismiss: () => void; }> = ({ onDismiss }) => {
   const [presentAlert] = useIonAlert();
-  const [tab, setTab] = useState(0)
-
-
+  const [tab, setTab] = useState(0);
+  const { isFetching, data, error, refetch } = useQuery(['products'], () => apiService.get(`products`), {
+    staleTime: 3 * 60 * 60 * 1000
+  })
   const handleClick = (data: any) => {
     presentAlert({
       header: 'Detail Produk',
@@ -49,15 +59,27 @@ const Menu: React.FC<{ onDismiss: () => void; }> = ({ onDismiss }) => {
         {
           tab === 0 &&
           <>
-            {[1, 2, 3, 4, 5].map((data, index) =>
-              <div key={index} className=' flex flex-row gap-4 relative m-2 bg-gray-50 hover:bg-secondary rounded-md p-2 z-[9999]' onClick={() => handleClick(data)}>
-                <img className="h-[48px] w-[48px] rounded-md" src="https://d1sag4ddilekf6.azureedge.net/compressed_webp/items/IDITE2021080412405056421/detail/menueditor_item_89773e1c5ff14a66a5a2c8a8daa92a25_1628080769929268301.webp" alt="Gambar Makanan" />
-                <div className="text-left">
-                  <h6 className='font-semibold text-md'>Ikan Pepes</h6>
-                  <p className='text-xs  rounded-md  mt-1'>Rica-rica</p>
-                </div>
-                <p className="absolute right-2 top-2 text-sm font-medium">Rp. 20.000</p>
-              </div>)}
+
+            {isFetching && <SkeletonList />}
+            {
+              data?.data?.data.length === 0 && !isFetching ? <EmptyBox /> : null
+            }
+            {
+              !isFetching &&
+              <>
+                {data?.data?.data?.map((product: any, index: Key | null | undefined) =>
+                  <><div className=' flex flex-row gap-4 relative m-2 bg-gray-50 hover:bg-secondary rounded-md p-2 z-[9999]' onClick={() => handleClick(data)}>
+                    <img className="h-[48px] w-[48px] rounded-md" src={`http://localhost:8000/uploads/products/${product.photo}`} alt="Gambar Makanan" />
+                    <div className="text-left">
+                      <h6 className='font-semibold text-md'>{product.name}</h6>
+                      <p className='text-xs  rounded-md  mt-1'>{product.variant_name ?? "-"}</p>
+                    </div>
+                    <p className="absolute right-2 top-2 text-sm font-medium">{formatRupiah(product.variant_price ?? 0, 'Rp.')}</p>
+                  </div>
+                  </>
+                )}
+              </>
+            }
           </>
         }
         {
@@ -99,7 +121,7 @@ const SearchBar = ({ onDismiss }: SearchBarProps) => {
   transform duration-500 transition-all">
       <div className="flex bg-gray-100 rounded-lg my-2 mx-2 pl-4 p-2 w-full space-x-2  items-center">
         <div onClick={() => onDismiss()}>
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
         </div>
 
         <input
