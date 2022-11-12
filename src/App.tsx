@@ -5,7 +5,7 @@ import Home from './pages/home/Home';
 import Login from './pages/login/Login';
 
 import '../src/index.css'
-import Menu from './pages/menu/Menu';
+import Menu from './components/Menu';
 import Meja from './pages/meja/Meja';
 import Navbar from './components/Navbar';
 /* Core CSS required for Ionic components to work properly */
