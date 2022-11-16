@@ -21,17 +21,21 @@ function Customer({ setCustomerModalOpen, setSelectedCustomer, selectedCustomer 
   const [presentAlert] = useIonAlert();
   const [tab, setTab] = useState(0);
   const [search, setSearch] = useState("");
-  const { isFetching, data, error, refetch } = useQuery(['customers'], () => apiService.get(`customers`), {
+  const { isFetching, data } = useQuery(['customers'], () => apiService.get(`customers`), {
     staleTime: 1 * 3600 * 1000
   });
-
   const handleClick = (data: any) => {
-    setSelectedCustomer(data);
+    setSelectedCustomer({
+      customer_id: data.id,
+      customer_name: data.name,
+      customer_email: data.email,
+      customer_phone: data.phone
+    });
     setCustomerModalOpen(false);
   };
 
   const filterData = () => {
-    return data?.data?.data.filter((item: any) => item.name.toLocaleLowerCase().includes(search.toLocaleLowerCase())
+    return data?.data?.data.filter((item: any) => item.name?.toLocaleLowerCase().includes(search.toLocaleLowerCase())
     );
   };
 
@@ -55,7 +59,7 @@ function Customer({ setCustomerModalOpen, setSelectedCustomer, selectedCustomer 
           <>
             {isFetching && <SkeletonList />}
             {data?.data?.data.length === 0 && !isFetching ? <EmptyBox /> : null}
-            {!isFetching && <>   {filterData().map((customer: any, index: React.Key | null | undefined) => <div key={index} className={`flex flex-row gap-4 relative m-2 ${selectedCustomer && selectedCustomer.id === customer.id ? "bg-secondary" : "bg-gray-50"} hover:bg-secondary rounded-md p-2 z-[9999]`} onClick={() => handleClick(customer)}>
+            {!isFetching && <>   {filterData().map((customer: any, index: React.Key | null | undefined) => <div key={index} className={`flex flex-row gap-4 relative m-2 ${selectedCustomer && selectedCustomer.customer_id == customer.id ? "bg-secondary" : "bg-gray-50"} hover:bg-secondary rounded-md p-2 z-[9999]`} onClick={() => handleClick(customer)}>
 
               <div className="text-left ">
                 <h6 className='font-semibold text-md'>{customer.name}</h6>

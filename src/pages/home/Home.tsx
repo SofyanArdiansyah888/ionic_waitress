@@ -13,10 +13,11 @@ const Home: React.FC = () => {
 
   const { isLoading, isError, data, error, refetch } = useQuery(['tables'], () => apiService.get('tables'))
 
-  const handleTable = (id: number) => {
-    history.push({
-      pathname: `meja/${id}`,
-    })
+  const handleTable = (item: any) => {
+    if (item.status === "OPEN" || item.status === "ORDERED")
+      history.push({
+        pathname: `meja/${item.id}`,
+      })
   }
   return (
     <>
@@ -34,7 +35,7 @@ const Home: React.FC = () => {
           {
             !isLoading && <>
               {data?.data?.data.map((item: any, index: any) =>
-                <div className='card m-2 px-3 py-6  h-[90px] bg-gray-50' key={index} onClick={() => handleTable(item.id)}>
+                <div className='card m-2 px-3 py-6  h-[90px] bg-gray-50' key={index} onClick={() => handleTable(item)}>
                   <div className=' flex flex-row gap-4 relative'>
                     <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="0.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.29 7 12 12 20.71 7"></polyline><line x1="12" y1="22" x2="12" y2="12"></line></svg>
                     <div>
