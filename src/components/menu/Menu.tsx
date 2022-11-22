@@ -1,16 +1,12 @@
-import { useIonAlert } from "@ionic/react";
-import React, { Dispatch, SetStateAction, useState } from "react";
-import { useQuery } from "react-query";
-import { ApiService, baseUrlImage } from "../../services/api.service";
+import { Dispatch, Key, SetStateAction, useState } from "react";
+import { useProducts } from "../../hooks/useProduct";
+import { baseUrlImage } from "../../services/api.service";
+import { formatRupiah } from "../../utils/formatter";
 import EmptyBox from "../EmptyBox";
 import SkeletonList from "../SkeletonList";
-import { Key } from "react";
-import { formatRupiah } from "../../utils/formatter";
 import { SearchBar } from "./SearchBar";
-import { Tab1 } from "./Tab1";
+import { Manual } from "./Manual";
 
-
-const apiService = new ApiService();
 interface MenuProps {
   setMenuModalOpen: Dispatch<SetStateAction<boolean>>;
   setSelectedMenu: Dispatch<SetStateAction<any>>;
@@ -23,14 +19,11 @@ function Menu({
   const [selectedCategory, setSelectedCategory] = useState("");
   const [search, setSearch] = useState("");
 
-  const [presentAlert] = useIonAlert();
   const [tab, setTab] = useState(0);
-  const { isFetching, data } = useQuery(['products'], () => apiService.get(`products`), {
-    staleTime: 3 * 60 * 60 * 1000
-  });
+  const { isLoading, data } = useProducts()
 
   const filterData = () => {
-    let filterProducts = data?.data?.data?.filter((item: any) =>
+    let filterProducts = data.filter((item: any) =>
       item.name.toLocaleLowerCase().includes(search.toLocaleLowerCase())
     );
     if (selectedCategory !== "All") {
@@ -66,13 +59,13 @@ function Menu({
         {tab === 0 &&
           <>
 
-            {isFetching && <SkeletonList />}
-            {data?.data?.data.length === 0 && !isFetching ? <EmptyBox /> : null}
-            {!isFetching &&
+            {isLoading && <SkeletonList />}
+            {data && data.length === 0 && !isLoading ? <EmptyBox /> : null}
+            {!isLoading &&
               <>
                 {filterData().map((product: any, index: Key | null | undefined) => <>
                   <div className=' flex flex-row justify-between gap-4  m-2 bg-gray-50 hover:bg-secondary rounded-md p-2 '
-                    onClick={() => 
+                    onClick={() =>
                       setSelectedMenu([
                         ...selectedMenu,
                         {
@@ -83,17 +76,17 @@ function Menu({
                           "quantity": 1,
                           "item_price": product.price,
                           'description': '',
-                          'created_at' : null
+                          'created_at': null
                         }
                       ])
-                      }>
+                    }>
                     <div className="flex">
                       <img className="h-[48px] w-[48px] rounded-md" src={`${baseUrlImage}/products/${product.photo}`} alt="Gambar Makanan" />
                       <div className="text-left ml-4">
                         <h6 className='font-semibold text-md'>{product.name}</h6>
                         <p className='text-xs  rounded-md  mt-1 w-full'>{product.variant_name ? product.variant_name : ''}
                           {
-                            product.materials.length >0 &&
+                            product.materials.length > 0 &&
                             <span className="text-right font-semibold"> (stock  {product?.materials[0]?.stock})</span>
                           }
                         </p>
@@ -106,7 +99,7 @@ function Menu({
                 )}
               </>}
           </>}
-        {tab === 1 && <Tab1 setSelectedMenu={setSelectedMenu} />}
+        {tab === 1 && <Manual setSelectedMenu={setSelectedMenu} />}
 
       </div>
       <div className="absolute bottom-0 py-2 w-full px-4 text-center bg-white border-none">

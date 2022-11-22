@@ -1,17 +1,15 @@
 import { IonContent, IonRefresher, IonRefresherContent, RefresherEventDetail } from '@ionic/react';
-import { useQuery } from 'react-query';
 import { useHistory } from 'react-router';
 import Navbar from '../../components/Navbar';
 import SkeletonList from '../../components/SkeletonList';
-import { ApiService } from '../../services/api.service';
+import { useTables } from '../../hooks/useTable';
 import { formatRupiah, secondToHourMinute } from '../../utils/formatter';
 
 
-const apiService = new ApiService();
 const Home: React.FC = () => {
   const history = useHistory()
 
-  const { isLoading, isError, data, error, refetch } = useQuery(['tables'], () => apiService.get('tables'))
+  const { isLoading, data, refetch } = useTables()
 
   const handleTable = (item: any) => {
     if (item.status === "OPEN" || item.status === "ORDERED")
@@ -19,6 +17,7 @@ const Home: React.FC = () => {
         pathname: `meja/${item.id}`,
       })
   }
+  
   return (
     <>
 
@@ -34,7 +33,7 @@ const Home: React.FC = () => {
           {isLoading && <SkeletonList />}
           {
             !isLoading && <>
-              {data?.data?.data.map((item: any, index: any) =>
+              {data.map((item: any, index: any) =>
                 <div className='card m-2 px-3 py-6  h-[90px] bg-gray-50' key={index} onClick={() => handleTable(item)}>
                   <div className=' flex flex-row gap-4 relative'>
                     <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="0.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.29 7 12 12 20.71 7"></polyline><line x1="12" y1="22" x2="12" y2="12"></line></svg>

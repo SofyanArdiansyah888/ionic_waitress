@@ -9,6 +9,7 @@ import { ChangeEventHandler, Dispatch, Key, SetStateAction, useEffect, useState 
 import EmptyBox from "../../components/EmptyBox";
 import SkeletonList from "../../components/SkeletonList";
 import { formatRupiah } from "../../utils/formatter";
+import {useCreateOrder, useOrderTable} from "../../hooks/useOrderTable";
 
 interface Order {
   "product_id": string;
@@ -21,7 +22,6 @@ interface Order {
   'created_at': string | null;
 }
 
-const apiService = new ApiService();
 export default function Meja() {
   // CUSTOMER MODAL
   const [customerModalOpen, setCustomerModalOpen] = useState(false);
@@ -37,49 +37,28 @@ export default function Meja() {
   const history = useHistory()
   const tableId = history?.location?.pathname?.split('/')[2];
   const [presentAlert] = useIonAlert();
-  const { isFetching, isLoading, data, status } = useQuery(['table-order'], () => apiService.get(`tables/${tableId}/orders`))
-  const mutation = useMutation((data) => apiService.post(`tables/${tableId}/orders`, data))
-  const [presentLoading, dismissLoading] = useIonLoading();
-  const queryClient = useQueryClient()
 
-  useEffect(() => {
-    if (mutation.isLoading)
-      presentLoading({ message: "Loading..." })
-    else {
-      if (mutation.isSuccess) {
-        queryClient.invalidateQueries({ queryKey: ['table-order'] })
-        presentAlert({
-          header: "Berhasil Menginput data",
-          buttons: ['Ok']
-        })
-      }
-      dismissLoading()
-    }
-    return () => { }
-  }, [mutation.isLoading])
+  const handleGetData = (data: any) => {
+    let temp: Order[] = []
+    data?.products?.map((item: any) => {
+      temp.push({
+        "product_id": item.id,
+        "product_name": item.pivot.product_name,
+        "variant_id": item.pivot.variant_id,
+        "variant_name": item.pivot.variant_name,
+        "quantity": item.pivot.quantity,
+        "item_price": item.pivot.item_price,
+        'description': item.pivot.description,
+        'created_at': item.pivot.created_at
 
-  useEffect(() => {
-    if (status === 'success' && !isFetching) {
-
-      let temp: Order[] = []
-      data?.data?.products?.map((item: any) => {
-        temp.push({
-          "product_id": item.id,
-          "product_name": item.pivot.product_name,
-          "variant_id": item.pivot.variant_id,
-          "variant_name": item.pivot.variant_name,
-          "quantity": item.pivot.quantity,
-          "item_price": item.pivot.item_price,
-          'description': item.pivot.description,
-          'created_at': item.pivot.created_at
-
-        })
       })
-      setdatabaseMenu(temp)
-      setSelectedCustomer({ customer_id: data?.data?.customer_id })
-    }
-    return () => { }
-  }, [isFetching])
+    })
+    setdatabaseMenu(temp)
+    setSelectedCustomer({ customer_id: data?.customer_id })
+  }
+  const { isFetching } = useOrderTable(tableId, handleGetData)
+
+  const mutation = useCreateOrder(tableId,databaseMenu)
 
   useEffect(() => {
     let temp = [...selectedMenu, ...databaseMenu]
@@ -95,7 +74,7 @@ export default function Meja() {
   })
 
 
-  const handleSimpan = () => {
+  const handleSimpan = async () => {
     if (selectedCustomer.customer_id && selectedMenu.length > 0) {
       const data: any = {
         customer_id: selectedCustomer.customer_id,
@@ -104,9 +83,7 @@ export default function Meja() {
         total_payment: 0,
         product: selectedMenu
       }
-
       mutation.mutate(data)
-
     } else {
       presentAlert({
         header: 'Silahkan lengkapi data customer dan menu terlebih dahulu !',
@@ -144,7 +121,7 @@ export default function Meja() {
         selectedCustomer={selectedCustomer}
       />
       <div className="container mx-auto h-screen overflow-scroll pb-32 ">
-        {isFetching && <SkeletonList />}
+        {(isFetching || mutation.isLoading) && <SkeletonList />}
         {
           filterData().length === 0 && !isFetching ? <EmptyBox /> : null
         }

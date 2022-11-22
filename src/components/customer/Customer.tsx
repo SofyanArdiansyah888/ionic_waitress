@@ -1,16 +1,11 @@
 /* eslint-disable no-sequences */
-import { useIonAlert } from "@ionic/react";
-import React, { ChangeEventHandler, Dispatch, SetStateAction, useState } from "react";
-import { useQuery } from "react-query";
-import { ApiService } from "../../services/api.service";
+import React, { Dispatch, SetStateAction, useState } from "react";
+import { useCustomers } from "../../hooks/useCustomer";
 import EmptyBox from "../EmptyBox";
 import SkeletonList from "../SkeletonList";
 import { SearchBar } from "./SearchBar";
-import { Tab1 } from "./Tab1";
+import { Create } from "./Create";
 
-
-
-const apiService = new ApiService()
 interface CustomerProps {
   setCustomerModalOpen: Dispatch<SetStateAction<boolean>>;
   setSelectedCustomer: Dispatch<SetStateAction<any>>;
@@ -18,12 +13,10 @@ interface CustomerProps {
 }
 
 function Customer({ setCustomerModalOpen, setSelectedCustomer, selectedCustomer }: CustomerProps) {
-  const [presentAlert] = useIonAlert();
   const [tab, setTab] = useState(0);
   const [search, setSearch] = useState("");
-  const { isFetching, data } = useQuery(['customers'], () => apiService.get(`customers`), {
-    staleTime: 1 * 3600 * 1000
-  });
+  const { isLoading, data } = useCustomers();
+  
   const handleClick = (data: any) => {
     setSelectedCustomer({
       customer_id: data.id,
@@ -35,7 +28,7 @@ function Customer({ setCustomerModalOpen, setSelectedCustomer, selectedCustomer 
   };
 
   const filterData = () => {
-    return data?.data?.data.filter((item: any) => item.name?.toLocaleLowerCase().includes(search.toLocaleLowerCase())
+    return data.filter((item: any) => item.name?.toLocaleLowerCase().includes(search.toLocaleLowerCase())
     );
   };
 
@@ -52,14 +45,12 @@ function Customer({ setCustomerModalOpen, setSelectedCustomer, selectedCustomer 
         </div>
       </div>
 
-
-
       <div className="container mx-auto h-screen overflow-scroll  ">
         {tab === 0 &&
           <>
-            {isFetching && <SkeletonList />}
-            {data?.data?.data.length === 0 && !isFetching ? <EmptyBox /> : null}
-            {!isFetching && <>   {filterData().map((customer: any, index: React.Key | null | undefined) => <div key={index} className={`flex flex-row gap-4 relative m-2 ${selectedCustomer && selectedCustomer.customer_id == customer.id ? "bg-secondary" : "bg-gray-50"} hover:bg-secondary rounded-md p-2 z-[9999]`} onClick={() => handleClick(customer)}>
+            {isLoading && <SkeletonList />}
+            {data && data.length === 0 && !isLoading ? <EmptyBox /> : null}
+            {!isLoading && <>   {filterData().map((customer: any, index: React.Key | null | undefined) => <div key={index} className={`flex flex-row gap-4 relative m-2 ${selectedCustomer && selectedCustomer.customer_id == customer.id ? "bg-secondary" : "bg-gray-50"} hover:bg-secondary rounded-md p-2 z-[9999]`} onClick={() => handleClick(customer)}>
 
               <div className="text-left ">
                 <h6 className='font-semibold text-md'>{customer.name}</h6>
@@ -71,7 +62,7 @@ function Customer({ setCustomerModalOpen, setSelectedCustomer, selectedCustomer 
             </div>)}
             </>}
           </>}
-        {tab === 1 && <Tab1 setSelectedCustomer={setSelectedCustomer} setCustomerModalOpen={setCustomerModalOpen} />}
+        {tab === 1 && <Create setSelectedCustomer={setSelectedCustomer} setCustomerModalOpen={setCustomerModalOpen} />}
 
       </div>
 

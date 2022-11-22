@@ -4,13 +4,13 @@ import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "react-query";
 import { ApiService } from "../../services/api.service";
 
-interface Tab1Props {
+interface CreateProps {
     setSelectedCustomer: Dispatch<SetStateAction<any>>;
     setCustomerModalOpen: Dispatch<SetStateAction<any>>;
 }
 const apiService = new ApiService()
-export const Tab1 = ({ setSelectedCustomer, setCustomerModalOpen }: Tab1Props) => {
-    const { register, handleSubmit, watch, formState: { errors } } = useForm();
+export const Create = ({ setSelectedCustomer, setCustomerModalOpen }: CreateProps) => {
+    const { register, handleSubmit, formState: { errors } } = useForm();
     const mutation = useMutation((data) => apiService.post(`customers`, data))
     const [present, dismiss] = useIonLoading();
     const queryClient = useQueryClient()
