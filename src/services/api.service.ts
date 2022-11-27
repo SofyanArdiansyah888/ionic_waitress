@@ -14,17 +14,17 @@ import { DatabaseService } from './database.service';
     databaseService = new DatabaseService()
 
     async get(url: string) {
-      this.baseConfig.headers.Authorization =  `Bearer ${this.databaseService.getAccessToken()}`;
+      this.baseConfig.headers.Authorization =  `Bearer ${this.databaseService.getUser()?.token}`;
       return await axios.get(`${baseUrl}/${url}`, this.baseConfig);
     }
 
     async post(url: string, data: any) {
-      this.baseConfig.headers.Authorization =  `Bearer ${this.databaseService.getAccessToken()}`;
+      this.baseConfig.headers.Authorization =  `Bearer ${this.databaseService.getUser()?.token}`;
       return await axios.post(`${baseUrl}/${url}`, data, this.baseConfig);
     }
 
     async put(url: string, data: any) {
-      this.baseConfig.headers.Authorization =  `Bearer ${this.databaseService.getAccessToken()}`;
+      this.baseConfig.headers.Authorization =  `Bearer ${this.databaseService.getUser()?.token}`;
       return await axios.put(`${baseUrl}/${url}`, data, this.baseConfig);
     }
   }

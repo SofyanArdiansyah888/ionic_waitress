@@ -1,40 +1,28 @@
 import { useIonLoading } from "@ionic/react";
-import { Dispatch, SetStateAction, useEffect } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { useForm } from "react-hook-form";
-import { useMutation, useQueryClient } from "react-query";
-import { ApiService } from "../../services/api.service";
+import { useQueryClient } from "react-query";
+import { useCreateCustomer } from "../../hooks/useCustomer";
 
 interface CreateProps {
     setSelectedCustomer: Dispatch<SetStateAction<any>>;
     setCustomerModalOpen: Dispatch<SetStateAction<any>>;
 }
-const apiService = new ApiService()
+
 export const Create = ({ setSelectedCustomer, setCustomerModalOpen }: CreateProps) => {
-    const { register, handleSubmit, formState: { errors } } = useForm();
-    const mutation = useMutation((data) => apiService.post(`customers`, data))
-    const [present, dismiss] = useIonLoading();
     const queryClient = useQueryClient()
-
-    useEffect(() => {
-        if (mutation.isLoading)
-            present({ message: "Loading..." })
-        else {
-            if (mutation.isSuccess) {
-                console.log(mutation.data.data)
-                setSelectedCustomer(mutation.data.data.data)
-                queryClient.invalidateQueries({queryKey:['customers']})
-                dismiss()
-                setCustomerModalOpen(false)
-            }
-        }
-        return () => { }
-    }, [mutation.isLoading])
-
-    const onSubmit = (data: any) => {
-        mutation.mutate(data)
-    }
+    const [present, dismiss] = useIonLoading();
+    const { register, handleSubmit, formState: { errors } } = useForm();
+    
+    const {mutate} = useCreateCustomer((data:any) => {
+        setSelectedCustomer(data?.data?.data)
+        queryClient.invalidateQueries({queryKey:['customers']})
+        dismiss()
+        setCustomerModalOpen(false)
+    });
+    
     return (
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit((data) => mutate(data))}>
             <div className="m-4 flex flex-col gap-6">
                 <div className="form-control">
                     <input type="text" placeholder="Nama" {...register("name", { required: true })} className="input input-bordered input-md w-full " />

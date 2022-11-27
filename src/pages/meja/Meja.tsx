@@ -10,7 +10,7 @@ import EmptyBox from "../../components/EmptyBox";
 import SkeletonList from "../../components/SkeletonList";
 import { formatRupiah } from "../../utils/formatter";
 import {useCreateOrder, useOrderTable} from "../../hooks/useOrderTable";
-
+import {useParams} from 'react-router-dom'
 interface Order {
   "product_id": string;
   "product_name": string;
@@ -26,6 +26,7 @@ export default function Meja() {
   // CUSTOMER MODAL
   const [customerModalOpen, setCustomerModalOpen] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState({ customer_id: null });
+  console.log(selectedCustomer)
   // MENU MODAL
   const [menuModalOpen, setMenuModalOpen] = useState(false);
   const [selectedMenu, setSelectedMenu] = useState<Order[]>([]);
@@ -34,8 +35,8 @@ export default function Meja() {
   // CUSTOMER MENU
   const [search, setSearch] = useState("");
 
-  const history = useHistory()
-  const tableId = history?.location?.pathname?.split('/')[2];
+  const params:any = useParams()
+  const tableId = params.id;
   const [presentAlert] = useIonAlert();
 
   const handleGetData = (data: any) => {
@@ -54,7 +55,7 @@ export default function Meja() {
       })
     })
     setdatabaseMenu(temp)
-    setSelectedCustomer({ customer_id: data?.customer_id })
+    setSelectedCustomer({ customer_id: data?.customer_id})
   }
   const { isFetching } = useOrderTable(tableId, handleGetData)
 

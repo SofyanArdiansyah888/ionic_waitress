@@ -1,10 +1,18 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import { useHistory } from "react-router";
+import { DatabaseService } from "../services/database.service";
 
+const database = new DatabaseService()
 const Navbar: React.FC<{ isBackButton: boolean }> = ({ isBackButton }) => {
   const history = useHistory()
+  const user = database.getUser()
   const handleBack = () => {
     history.goBack()
+  }
+
+  const handleLogout = () => {
+    database.clear()
+    history.push('/login')
   }
   return (<>
     <div className="navbar bg-primary ">
@@ -34,7 +42,13 @@ const Navbar: React.FC<{ isBackButton: boolean }> = ({ isBackButton }) => {
           <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
             <div className="w-10 rounded-full bg-white">
               {/* <img src="https://placeimg.com/80/80/people" alt="Profile" /> */}
-              <p className="items-center my-3">J.K.</p>
+              <p className="items-center my-3"> {user.name
+                ? user.name
+                  .split(" ")
+                  .map((n) => n[0])
+                  .join(".")
+                  .toUpperCase()
+                : ""}</p>
             </div>
           </label>
           <ul tabIndex={0} className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
@@ -45,7 +59,7 @@ const Navbar: React.FC<{ isBackButton: boolean }> = ({ isBackButton }) => {
               </a>
             </li>
             <li><a>Settings</a></li>
-            <li><a>Logout</a></li>
+            <li><a onClick={handleLogout}>Logout</a></li>
           </ul>
         </div>
       </div>

@@ -8,6 +8,7 @@ import '../src/index.css'
 import Menu from './components/menu/Menu';
 import Meja from './pages/meja/Meja';
 import Navbar from './components/Navbar';
+import { DatabaseService } from './services/database.service';
 /* Core CSS required for Ionic components to work properly */
 // import '@ionic/react/css/core.css';
 
@@ -29,25 +30,37 @@ import Navbar from './components/Navbar';
 
 setupIonicReact();
 
+
+const database = new DatabaseService();
+let user = database.getUser();
+let {token } = user
+
+const checkToken = (component: any) => {
+  token = database.getUser().token;
+  return token ? component : <Redirect to="/login" />;
+};
 const App: React.FC = () => (
   <IonApp>
     <IonReactRouter>
       <IonRouterOutlet>
-        
-        <Route exact path="/home">
-          <Home />
-        </Route>
-      
-        <Route exact path="/meja/:id">
-          <Meja />
-        </Route>
-        
 
-        <Route exact path="/login">
-          <Login />
-        </Route>
+        <Route
+          exact
+          path="/home"
+          render={() => checkToken(<Home />)}
+        />
+
+
+        <Route
+          exact
+          path="/meja/:id"
+          render={() => checkToken(<Meja />)}
+        />
+
+
+        <Route exact path="/login" render={() => token ? <Redirect to="/home" /> : <Login />} />
         <Route exact path="/">
-          <Redirect to="/home" />
+          <Redirect to="/login" />
         </Route>
       </IonRouterOutlet>
     </IonReactRouter>

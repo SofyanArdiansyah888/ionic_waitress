@@ -14,11 +14,12 @@ interface MenuProps {
 }
 
 function Menu({
-  setMenuModalOpen, setSelectedMenu, selectedMenu
+  setMenuModalOpen, 
+  setSelectedMenu, 
+  selectedMenu
 }: MenuProps) {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [search, setSearch] = useState("");
-
   const [tab, setTab] = useState(0);
   const { isLoading, data } = useProducts()
 

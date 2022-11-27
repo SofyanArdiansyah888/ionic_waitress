@@ -1,14 +1,30 @@
+export interface UserLogin {
+  username: string;
+  pwd: string;
+  remember?: boolean;
+}
 
+export interface User {
+  name: string;
+  token: string;
+  role: string;
+}
 
 export class DatabaseService {
-  
-  getAccessToken(): string | null {
-    const token = '1|Pbc4ZVuqabFPLR4VHRxvDS5UAweWRmEGIQlch4mJ';//localStorage.getItem('access_token');
-    return token;
+  setUser(user: any) {
+    user = JSON.stringify(user);
+    localStorage.setItem("user", user);
   }
 
-  setAccessToken(token: string) {
-    localStorage.setItem('access_token', token);
+  getUser() {
+    let user = localStorage.getItem("user");
+    return user
+      ? (JSON.parse(user) as User)
+      : {
+            token: null,
+            name: "",
+            role: "",
+        };
   }
 
   clear() {

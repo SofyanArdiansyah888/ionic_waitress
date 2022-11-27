@@ -9,6 +9,7 @@
     "@capacitor/haptics": "4.0.1",
     "@capacitor/keyboard": "4.0.1",
     "@capacitor/status-bar": "4.0.1",
+    "@hookform/resolvers": "^2.9.10",
     "@ionic/react": "^6.0.0",
     "@ionic/react-router": "^6.0.0",
     "@tanstack/react-query": "^4.14.6",
@@ -44,7 +45,8 @@
     "workbox-range-requests": "^5.1.4",
     "workbox-routing": "^5.1.4",
     "workbox-strategies": "^5.1.4",
-    "workbox-streams": "^5.1.4"
+    "workbox-streams": "^5.1.4",
+    "yup": "^0.32.11"
   },
   "scripts": {
     "start": "react-scripts start",

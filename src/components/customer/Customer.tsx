@@ -16,7 +16,7 @@ function Customer({ setCustomerModalOpen, setSelectedCustomer, selectedCustomer 
   const [tab, setTab] = useState(0);
   const [search, setSearch] = useState("");
   const { isLoading, data } = useCustomers();
-  
+
   const handleClick = (data: any) => {
     setSelectedCustomer({
       customer_id: data.id,
@@ -62,7 +62,7 @@ function Customer({ setCustomerModalOpen, setSelectedCustomer, selectedCustomer 
             </div>)}
             </>}
           </>}
-        {tab === 1 && <Create setSelectedCustomer={setSelectedCustomer} setCustomerModalOpen={setCustomerModalOpen} />}
+        {/* {tab === 1 && <Create setSelectedCustomer={setSelectedCustomer} setCustomerModalOpen={setCustomerModalOpen} />} */}
 
       </div>
 
