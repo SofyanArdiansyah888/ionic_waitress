@@ -6,6 +6,8 @@ import EmptyBox from "../EmptyBox";
 import SkeletonList from "../SkeletonList";
 import { SearchBar } from "./SearchBar";
 import { Manual } from "./Manual";
+import { IonModal, useIonModal } from "@ionic/react";
+import Variant from "./Variant";
 
 interface MenuProps {
   setMenuModalOpen: Dispatch<SetStateAction<boolean>>;
@@ -14,18 +16,21 @@ interface MenuProps {
 }
 
 function Menu({
-  setMenuModalOpen, 
-  setSelectedMenu, 
+  setMenuModalOpen,
+  setSelectedMenu,
   selectedMenu
 }: MenuProps) {
+
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedProduct, setSelectedProduct] = useState("");
   const [search, setSearch] = useState("");
   const [tab, setTab] = useState(0);
-  const { isLoading, data } = useProducts()
+  const { isLoading, data } = useProducts();
+  const [variantModal, setVariantModal] = useState(false);
 
   const filterData = () => {
     let filterProducts = data.filter((item: any) =>
-      item.name.toLocaleLowerCase().includes(search.toLocaleLowerCase())
+      item?.name?.toLocaleLowerCase().includes(search.toLocaleLowerCase())
     );
     if (selectedCategory !== "All") {
       filterProducts = filterProducts.filter((item: any) =>
@@ -65,21 +70,13 @@ function Menu({
             {!isLoading &&
               <>
                 {filterData().map((product: any, index: Key | null | undefined) => <>
-                  <div className=' flex flex-row justify-between gap-4  m-2 bg-gray-50 hover:bg-secondary rounded-md p-2 '
-                    onClick={() =>
-                      setSelectedMenu([
-                        ...selectedMenu,
-                        {
-                          "product_id": product.id,
-                          "product_name": product.name,
-                          "variant_id": product.variant_id,
-                          "variant_name": product.variant_name,
-                          "quantity": 1,
-                          "item_price": product.price,
-                          'description': '',
-                          'created_at': null
-                        }
-                      ])
+                  <div className={`flex flex-row justify-between gap-4  m-2 ${product.available ? "bg-gray" : "bg-red-200"}   rounded-md p-2 `}
+                    onClick={() => {
+                      if (product.available){
+                        setSelectedProduct(product)
+                        setVariantModal(true)
+                      }
+                    }
                     }>
                     <div className="flex">
                       <img className="h-[48px] w-[48px] rounded-md" src={`${baseUrlImage}/products/${product.photo}`} alt="Gambar Makanan" />
@@ -106,7 +103,15 @@ function Menu({
       <div className="absolute bottom-0 py-2 w-full px-4 text-center bg-white border-none">
         <button className=" btn btn-primary w-full " onClick={() => setMenuModalOpen(false)}>Kembali</button>
       </div>
-
+      <IonModal isOpen={variantModal}>
+        <Variant
+          setVariantModal={setVariantModal}
+          setSelectedMenu={setSelectedMenu}
+          selectedMenu={selectedMenu}
+          setSelectedProduct={setSelectedProduct}
+          selectedProduct={selectedProduct}
+        />
+      </IonModal>
     </>
   );
 }

@@ -22,14 +22,18 @@ export function useOrderTable(tableId: string, onSuccess: any) {
 
 }
 
+interface CreateOrder{
+    data:any;
+    tableId: any;
+}
 
-export function useCreateOrder(tableId: string, data: any) {
+export function useCreateOrder() {
     const queryClient = useQueryClient();
     const [presentAlert] = useIonAlert();
-    function createOrder(data: any, tableId: string) {
-        return () => apiService.post(`tables/${tableId}/orders`, data)
+    function createOrder({data, tableId} : CreateOrder) {
+        return apiService.post(`tables/${tableId}/orders`, data)
     }
-    return useMutation(createOrder(data, tableId), {
+    return useMutation(createOrder, {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['table-order'] })
             presentAlert({

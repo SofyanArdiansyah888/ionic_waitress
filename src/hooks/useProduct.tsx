@@ -9,11 +9,25 @@ export function useProducts() {
         return () => apiService.get(`products`);
     }
     return useQuery(['products'], fetchProducts(), {
-        staleTime: 3 * 60 * 60 * 1000,
         onError: () => {
             present('Silahkan Cek Koneksi Anda !')
         },
-        select: (data) => data?.data?.data
+        select: (data) => {
+           let products =  data?.data?.data
+           return products.map((product: any) => {
+            if(!product.materials){
+                product.available = true;
+            }else{
+                product.materials.sort(( a:any, b:any ) =>  a.stock - b.stock )
+                if(product.materials[0].stock > 0){
+                    product.available = true;
+                }else{
+                    product.available = false;
+                }
+            }
+            return product
+           })
+        }
     })
 
 }
