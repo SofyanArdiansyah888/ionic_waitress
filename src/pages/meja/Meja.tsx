@@ -22,12 +22,12 @@ interface Order {
 export default function Meja() {
   // CUSTOMER MODAL
   const [customerModalOpen, setCustomerModalOpen] = useState(false);
-  const [selectedCustomer, setSelectedCustomer] = useState({ customer_id: null });
+  const [selectedCustomer, setSelectedCustomer] = useState({ customer_id: null, customer_name: '', customer_email: '', customer_phone: '' });
 
   // MENU MODAL
   const [menuModalOpen, setMenuModalOpen] = useState(false);
   const [selectedMenu, setSelectedMenu] = useState<Order[]>([]);
-  
+
   // CUSTOMER MENU
   const [search, setSearch] = useState("");
   const [isOrdered, setIsOrdered] = useState(false);
@@ -55,7 +55,12 @@ export default function Meja() {
       setIsOrdered(true)
     }
     setSelectedMenu([...temp])
-    setSelectedCustomer({ customer_id: data?.customer_id })
+    setSelectedCustomer({
+      customer_id: data?.customer_id,
+      customer_name: data?.customer?.name,
+      customer_email: data?.customer?.email,
+      customer_phone: data?.customer?.phone,
+    })
   }
   const { isFetching } = useOrderTable(tableId, handleGetData)
 
@@ -65,12 +70,15 @@ export default function Meja() {
     if (selectedCustomer.customer_id && selectedMenu.length > 0) {
       const data: any = {
         customer_id: selectedCustomer.customer_id,
+        customer_name: selectedCustomer?.customer_name,
+        customer_email: selectedCustomer?.customer_email,
+        customer_phone: selectedCustomer?.customer_phone,
         table_id: tableId,
         total_item: 0,
         total_payment: 0,
         product: selectedMenu
       }
-      mutation.mutate({data, tableId})
+      mutation.mutate({ data, tableId })
     } else {
       presentAlert({
         header: 'Silahkan lengkapi data customer dan menu terlebih dahulu !',
@@ -80,7 +88,7 @@ export default function Meja() {
 
 
   }
-  
+
   const filterData = () => {
     return selectedMenu.filter((item: any) =>
       item.product_name.toLocaleLowerCase().includes(search.toLocaleLowerCase())
@@ -165,7 +173,18 @@ export default function Meja() {
       </div>
       <div className="absolute bottom-0 w-full px-4 py-2 text-center bg-base-100 flex gap-2 z-50">
         <button className=" btn btn-primary flex-1 " onClick={handleSimpan}>Simpan</button>
-        <button className=" btn btn-outline flex-1 " onClick={() => setMenuModalOpen(true)}>Tambah</button>
+        <button className=" btn btn-outline flex-1 " onClick={() => {
+
+          if (selectedCustomer.customer_id) {
+            setMenuModalOpen(true)
+          } else {
+            presentAlert({
+              header: 'Silahkan lengkapi data customer terlebih dahulu !',
+              buttons: ['OK']
+            })
+          }
+
+        }}>Tambah</button>
       </div>
       <IonModal isOpen={customerModalOpen}>
         <Customer

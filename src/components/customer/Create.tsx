@@ -15,7 +15,13 @@ export const Create = ({ setSelectedCustomer, setCustomerModalOpen }: CreateProp
     const { register, handleSubmit, formState: { errors } } = useForm();
     
     const {mutate} = useCreateCustomer((data:any) => {
-        setSelectedCustomer(data?.data?.data)
+        const customer = data?.data?.data;
+        setSelectedCustomer({
+            customer_id: customer?.id,
+            customer_name: customer?.name,
+            customer_phone: customer?.phone,
+            customer_email: customer?.email,
+        })
         queryClient.invalidateQueries({queryKey:['customers']})
         dismiss()
         setCustomerModalOpen(false)
