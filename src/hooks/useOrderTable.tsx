@@ -12,10 +12,7 @@ export function useOrderTable(tableId: string, onSuccess: any) {
     return useQuery(['table-order'], fetchTables(tableId), {
         onSuccess,
         onError: () => {
-            presentAlert({
-                header: "Gagal Koneksi Ke Server",
-                buttons: ['Ok']
-              })
+            presentAlert('Silahkan Cek Koneksi Anda !')
         },
         select: (data) => data.data
     })

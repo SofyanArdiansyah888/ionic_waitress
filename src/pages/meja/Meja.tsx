@@ -138,7 +138,7 @@ export default function Meja() {
 
         {!isFetching && <>{filterData().map((product: any, index: Key | null | undefined) =>
           <>
-            <div key={index} className=' flex flex-row gap-4 relative m-2 bg-gray-50 rounded-md p-2 min-h-[150px]'>
+            <div key={index} className=' flex flex-row gap-4 relative m-2 bg-gray-50 rounded-md p-2 min-h-[130px]'>
 
               <div className="text-left">
                 <h6 className='font-semibold text-md capitalize'>{product?.product_name}</h6>
@@ -147,9 +147,9 @@ export default function Meja() {
               </div>
               <div className="absolute flex gap-2 text-red-400 right-2 bottom-2 text-sm font-medium z-50" >
                 <input placeholder="0" className=" w-16 h-auto input input-bordered input-sm" disabled value={product.quantity} />
-                {!product?.created_at && <button className="btn btn-terniary btn-sm" onClick={() => handleSubQuantity(product)}>
+                <button className="btn btn-terniary btn-sm" onClick={() => handleSubQuantity(product)}>
                   -
-                </button>}
+                </button>
                 <button className="btn btn-primary btn-sm" onClick={() => handleAddQuantity(product)}>
                   +
                 </button>

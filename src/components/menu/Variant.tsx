@@ -30,7 +30,7 @@ export default function Variant({
     selectedProduct
 }: VariantProps) {
     const [presentToast] = useIonToast();
-    const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm<FormInputs>({
+    const { register, handleSubmit, formState: { errors }, setValue } = useForm<FormInputs>({
         mode: "onChange",
         resolver: yupResolver(schema),
     });
@@ -39,7 +39,7 @@ export default function Variant({
     useEffect(() => {
         setValue('product_name', selectedProduct.name)
         setValue('item_price', selectedProduct.price)
-    }, [])
+    }, [selectedProduct.name, selectedProduct.price, setValue])
 
 
     const onSubmit = (data: any) => {

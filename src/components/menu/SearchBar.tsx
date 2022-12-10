@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, ChangeEventHandler, Key } from "react";
+import { ChangeEventHandler, Dispatch, SetStateAction } from "react";
 import { useQuery } from "react-query";
 import { ApiService } from "../../services/api.service";
 
@@ -11,7 +11,7 @@ interface SearchBarProps {
 
 const apiService = new ApiService();
 export const SearchBar = ({ handleChange, setMenuModalOpen, setSelectedCategory, selectedCategory }: SearchBarProps) => {
-    const { isFetching, data } = useQuery(['categories'], () => apiService.get(`categories`), {
+    const {  data } = useQuery(['categories'], () => apiService.get(`categories`), {
         staleTime: 0.5 * 60 * 60 * 1000
     })
     return (<>
@@ -33,8 +33,9 @@ export const SearchBar = ({ handleChange, setMenuModalOpen, setSelectedCategory,
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="0.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
                         </div>
                     </label>
-                    <div tabIndex={0} className="mt-3 card card-compact dropdown-content w-24 bg-base-100 shadow z-50 ">
-                        <div className="card-body mx-0">
+                    <div tabIndex={0} className="mt-3 card card-compact dropdown-content min-w-[100px]  bg-base-100 shadow z-50 ">
+                        <div className="card-body mx-0 max-h-[300px] overflow-auto">
+                            <p className={`p-1 rounded-md ${"all".toLocaleLowerCase() === selectedCategory.toLocaleLowerCase() ? 'bg-secondary' : ''}`} onClick={() => setSelectedCategory("all".toLocaleLowerCase())}>All</p>
                             {
                                 data?.data?.data.map((category: any) => <p className={`p-1 rounded-md ${category.name.toLocaleLowerCase() === selectedCategory.toLocaleLowerCase() ? 'bg-secondary' : ''}`} key={category.id} onClick={() => setSelectedCategory(category.name.toLocaleLowerCase())}>{category.name}</p>)
                             }

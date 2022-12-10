@@ -1,13 +1,11 @@
-import { Redirect, Route } from 'react-router-dom';
 import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
+import { Redirect, Route } from 'react-router-dom';
 import Home from './pages/home/Home';
 import Login from './pages/login/Login';
 
-import '../src/index.css'
-import Menu from './components/menu/Menu';
+import '../src/index.css';
 import Meja from './pages/meja/Meja';
-import Navbar from './components/Navbar';
 import { DatabaseService } from './services/database.service';
 /* Core CSS required for Ionic components to work properly */
 // import '@ionic/react/css/core.css';

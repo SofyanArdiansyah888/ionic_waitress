@@ -4,6 +4,7 @@ import { useLogin } from "../../hooks/useAuth";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { DatabaseService } from "../../services/database.service";
+import { useIonAlert } from "@ionic/react";
 const schema = yup.object({
     email: yup.string().email().required(),
     password: yup.string().required(),
@@ -15,23 +16,24 @@ type FormInputs = {
 const database = new DatabaseService()
 const Login: React.FC = () => {
     const history = useHistory()
+    const [presentAlert] = useIonAlert();
     const onSuccess = (data: any) => {
         database.setUser(data.data.user)
         history.push('/home');
     }
     const onError = (error: any) => {
         let temp = error?.response?.data?.message
-        
-        setError('email',{message: temp})
+        if (temp)
+            setError('email', { message: temp })
+        else
+            presentAlert('Silahkan Cek Koneksi Anda !')
     }
     const { mutate } = useLogin(onSuccess, onError);
 
     const {
         register,
-        trigger,
         formState: { errors },
         handleSubmit,
-        reset,
         setError
     } = useForm<FormInputs>({
         mode: "onChange",

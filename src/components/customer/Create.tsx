@@ -11,7 +11,7 @@ interface CreateProps {
 
 export const Create = ({ setSelectedCustomer, setCustomerModalOpen }: CreateProps) => {
     const queryClient = useQueryClient()
-    const [present, dismiss] = useIonLoading();
+    const [ dismiss] = useIonLoading();
     const { register, handleSubmit, formState: { errors } } = useForm();
     
     const {mutate} = useCreateCustomer((data:any) => {

@@ -50,7 +50,7 @@ function Customer({ setCustomerModalOpen, setSelectedCustomer, selectedCustomer 
           <>
             {isLoading && <SkeletonList />}
             {data && data.length === 0 && !isLoading ? <EmptyBox /> : null}
-            {!isLoading && <>   {filterData().map((customer: any, index: React.Key | null | undefined) => <div key={index} className={`flex flex-row gap-4 relative m-2 ${selectedCustomer && selectedCustomer.customer_id == customer.id ? "bg-secondary" : "bg-gray-50"} hover:bg-secondary rounded-md p-2 z-[9999]`} onClick={() => handleClick(customer)}>
+            {!isLoading && <>   {filterData().map((customer: any, index: React.Key | null | undefined) => <div key={index} className={`flex flex-row gap-4 relative m-2 ${selectedCustomer && selectedCustomer.customer_id === customer.id ? "bg-secondary" : "bg-gray-50"} hover:bg-secondary rounded-md p-2 z-[9999]`} onClick={() => handleClick(customer)}>
 
               <div className="text-left ">
                 <h6 className='font-semibold text-md'>{customer.name}</h6>

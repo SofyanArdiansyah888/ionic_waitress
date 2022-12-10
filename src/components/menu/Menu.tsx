@@ -1,12 +1,12 @@
+import { IonModal } from "@ionic/react";
 import { Dispatch, Key, SetStateAction, useState } from "react";
 import { useProducts } from "../../hooks/useProduct";
 import { baseUrlImage } from "../../services/api.service";
 import { formatRupiah } from "../../utils/formatter";
 import EmptyBox from "../EmptyBox";
 import SkeletonList from "../SkeletonList";
-import { SearchBar } from "./SearchBar";
 import { Manual } from "./Manual";
-import { IonModal, useIonModal } from "@ionic/react";
+import { SearchBar } from "./SearchBar";
 import Variant from "./Variant";
 
 interface MenuProps {
@@ -32,7 +32,7 @@ function Menu({
     let filterProducts = data.filter((item: any) =>
       item?.name?.toLocaleLowerCase().includes(search.toLocaleLowerCase())
     );
-    if (selectedCategory !== "All") {
+    if (selectedCategory !== "all") {
       filterProducts = filterProducts.filter((item: any) =>
         item?.category?.name
           .toLocaleLowerCase()
@@ -72,14 +72,19 @@ function Menu({
                 {filterData().map((product: any, index: Key | null | undefined) => <>
                   <div className={`flex flex-row justify-between gap-4  m-2 ${product.available ? "bg-gray" : "bg-red-200"}   rounded-md p-2 `}
                     onClick={() => {
-                      if (product.available){
+                      if (product.available) {
                         setSelectedProduct(product)
                         setVariantModal(true)
                       }
                     }
                     }>
                     <div className="flex">
-                      <img className="h-[48px] w-[48px] rounded-md" src={`${baseUrlImage}/products/${product.photo}`} alt="Gambar Makanan" />
+                      {product?.photo ? <img className="h-[48px] w-[48px] rounded-md" src={`${baseUrlImage}/products/${product.photo}`} alt="Gambar Makanan" /> : <div className="h-[48px] w-[48px] rounded-full bg-slate-200 text-center">
+                        <img src="./assets/icon/empty.svg" alt="Gambar Makanan" className="mx-auto" />
+                      </div>}
+
+
+
                       <div className="text-left ml-4">
                         <h6 className='font-semibold text-md'>{product.name}</h6>
                         <p className='text-xs  rounded-md  mt-1 w-full'>{product.variant_name ? product.variant_name : ''}
