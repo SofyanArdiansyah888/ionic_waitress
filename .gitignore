@@ -4,6 +4,7 @@
 /node_modules
 /.pnp
 /resources
+/android
 .pnp.js
 
 # testing

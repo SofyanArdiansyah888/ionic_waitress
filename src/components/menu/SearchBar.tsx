@@ -1,4 +1,4 @@
-import { ChangeEventHandler, Dispatch, SetStateAction } from "react";
+import { ChangeEventHandler, Dispatch, SetStateAction, useState } from "react";
 import { useQuery } from "react-query";
 import { ApiService } from "../../services/api.service";
 
@@ -11,9 +11,10 @@ interface SearchBarProps {
 
 const apiService = new ApiService();
 export const SearchBar = ({ handleChange, setMenuModalOpen, setSelectedCategory, selectedCategory }: SearchBarProps) => {
-    const {  data } = useQuery(['categories'], () => apiService.get(`categories`), {
+    const { data } = useQuery(['categories'], () => apiService.get(`categories`), {
         staleTime: 0.5 * 60 * 60 * 1000
     })
+    const [dropdown, setDropdown] = useState(false);
     return (<>
         <div className="search-form   flex items-center space-x-4   mx-auto w-full
     transform duration-500 transition-all">
@@ -27,21 +28,21 @@ export const SearchBar = ({ handleChange, setMenuModalOpen, setSelectedCategory,
                     type="text" placeholder="Search for menu..."
                     onChange={handleChange} />
 
-                <div className="dropdown dropdown-end">
-                    <label tabIndex={0} className="btn btn-ghost btn-circle">
+                <div className="dropdown dropdown-end dropdown-open">
+                    <label tabIndex={0} className="btn btn-ghost btn-circle" onClick={() => setDropdown(value => !value)}>
                         <div className="indicator ">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="0.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
                         </div>
                     </label>
-                    <div tabIndex={0} className="mt-3 card card-compact dropdown-content min-w-[100px]  bg-base-100 shadow z-50 ">
-                        <div className="card-body mx-0 max-h-[300px] overflow-auto">
-                            <p className={`p-1 rounded-md ${"all".toLocaleLowerCase() === selectedCategory.toLocaleLowerCase() ? 'bg-secondary' : ''}`} onClick={() => setSelectedCategory("all".toLocaleLowerCase())}>All</p>
+                    {dropdown && <div tabIndex={0} className="mt-3 card card-compact dropdown-content min-w-[200px]  bg-base-100 shadow z-50 ">
+                        <div className="card-body mx-0 max-h-[450px] overflow-auto">
+                            <p className={`p-1 rounded-md ${"all".toLocaleLowerCase() === selectedCategory.toLocaleLowerCase() ? 'bg-secondary' : ''}`} onClick={() => {setSelectedCategory("all".toLocaleLowerCase());setDropdown(false)}}>All</p>
                             {
-                                data?.data?.data.map((category: any) => <p className={`p-1 rounded-md ${category.name.toLocaleLowerCase() === selectedCategory.toLocaleLowerCase() ? 'bg-secondary' : ''}`} key={category.id} onClick={() => setSelectedCategory(category.name.toLocaleLowerCase())}>{category.name}</p>)
+                                data?.data?.data.map((category: any) => <p className={`p-1 rounded-md ${category.name.toLocaleLowerCase() === selectedCategory.toLocaleLowerCase() ? 'bg-secondary' : ''}`} key={category.id} onClick={() => { setSelectedCategory(category.name.toLocaleLowerCase()); setDropdown(false) }}>{category.name}</p>)
                             }
 
                         </div>
-                    </div>
+                    </div>}
                 </div>
             </div>
 

@@ -1,6 +1,6 @@
 {
-	"appId": "io.ionic.starter",
-	"appName": "ionic_dewisri",
+	"appId": "com.dewisri.pos",
+	"appName": "Dewisri POS",
 	"webDir": "build",
 	"bundledWebRuntime": false
 }
