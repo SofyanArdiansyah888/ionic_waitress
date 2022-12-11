@@ -20,15 +20,15 @@ export function useOrderTable(tableId: string, onSuccess: any) {
 }
 
 interface CreateOrder{
-    data:any;
+    tempData:any;
     tableId: any;
 }
 
 export function useCreateOrder() {
     const queryClient = useQueryClient();
     const [presentAlert] = useIonAlert();
-    function createOrder({data, tableId} : CreateOrder) {
-        return apiService.post(`tables/${tableId}/orders`, data)
+    function createOrder({tempData, tableId} : CreateOrder) {
+        return apiService.post(`tables/${tableId}/orders`, tempData)
     }
     return useMutation(createOrder, {
         onSuccess: () => {
