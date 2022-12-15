@@ -14,7 +14,7 @@ interface VariantProps {
 
 const schema = yup.object({
     quantity: yup.number().min(1).required(),
-    description: yup.string().required(),
+    description: yup.string().nullable(true),
 });
 type FormInputs = {
     product_name: string;
@@ -29,12 +29,17 @@ export default function Variant({
     selectedMenu,
     selectedProduct
 }: VariantProps) {
+
     const [presentToast] = useIonToast();
-    const { register, handleSubmit, formState: { errors }, setValue } = useForm<FormInputs>({
+    const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm<FormInputs>({
         mode: "onChange",
         resolver: yupResolver(schema),
+        defaultValues: {
+            quantity: 1
+        }
     });
     const [selectedVariant, setSelectedVariant] = useState<any>();
+    const quantity = watch('quantity')
 
     useEffect(() => {
         setValue('product_name', selectedProduct.name)
@@ -66,7 +71,7 @@ export default function Variant({
                         "variant_name": selectedVariant?.name,
                         "quantity": data.quantity,
                         "item_price": data.item_price,
-                        'description': data.description,
+                        'description': data.description === '' ? '-' : data.description,
                         'created_at': null
                     }
                 ])
@@ -117,6 +122,19 @@ export default function Variant({
         setValue('item_price', variant.price)
         setSelectedVariant(variant);
     }
+
+    const handleAdd = () => {
+        setValue('quantity', quantity + 1)
+    }
+
+
+
+    const handleSub = (product: any) => {
+        let tempQuantity = quantity - 1;
+        if (tempQuantity < 1) tempQuantity = 1
+        setValue('quantity', tempQuantity)
+    }
+
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
             <div className="m-4 flex flex-col gap-3">
@@ -140,8 +158,12 @@ export default function Variant({
                 </div>
                 <div className="form-control">
                     <label className="font-medium mb-2">Jumlah</label>
-                    <input type="text" {...register("quantity", { required: true })} placeholder="Jumlah" className="input input-bordered input-md w-full " />
-                    {errors.quantity && <span className="text-xs text-red-700 mt-1 font-semibold">This field is required</span>}
+                    <div className="flex gap-1">
+                        <input type="text" {...register("quantity", { required: true })} placeholder="Jumlah" className="input input-bordered input-md w-full " />
+                        {errors.quantity && <span className="text-xs text-red-700 mt-1 font-semibold">This field is required</span>}
+                        <button type="button" className="btn btn-primary" onClick={handleAdd}>+</button>
+                        <button type="button" className="btn btn-secondary" onClick={handleSub}>-</button>
+                    </div>
                 </div>
                 <div className="form-control">
                     <label className="font-medium mb-2">Catatan Pelanggan</label>

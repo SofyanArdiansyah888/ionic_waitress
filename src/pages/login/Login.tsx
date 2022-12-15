@@ -5,14 +5,16 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { DatabaseService } from "../../services/database.service";
 import { useIonAlert } from "@ionic/react";
+import { useUsers } from "../../hooks/useUser";
 const schema = yup.object({
-    email: yup.string().email().required(),
+    id: yup.number().required().typeError('SIlahkan Pilih User'),
     password: yup.string().required(),
 });
 type FormInputs = {
-    email: string;
+    id: number;
     password: string;
 };
+
 const database = new DatabaseService()
 const Login: React.FC = () => {
     const history = useHistory()
@@ -24,11 +26,12 @@ const Login: React.FC = () => {
     const onError = (error: any) => {
         let temp = error?.response?.data?.message
         if (temp)
-            setError('email', { message: temp })
+            setError('id', { message: temp })
         else
             presentAlert('Silahkan Cek Koneksi Anda !')
     }
     const { mutate } = useLogin(onSuccess, onError);
+    const {data: users} = useUsers();
 
     const {
         register,
@@ -41,10 +44,9 @@ const Login: React.FC = () => {
     });
 
     const handleLogin = (data: any) => {
-
         mutate(data)
     }
-
+    
     return (
         <div className="h-screen w-full items-center flex bg-gray-50 ">
             <div className="card w-full md:w-1/3  mx-auto ">
@@ -61,14 +63,19 @@ const Login: React.FC = () => {
                                 Username
                             </label>
                             <div className="input-group">
-                                <input type="text" className="input input-primary  w-full" {...register("email")} />
+                                <select className="input input-primary  w-full" {...register("id")} >
+                                    <option>Pilih User</option>
+                                    {
+                                      users ? users?.map((user: any) => <option value={user.id}> {user.name}</option>) : ""
+                                    }
+                                </select>
                                 <span className="btn btn-circle btn-primary">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                                 </span>
                             </div>
-                            {errors.email && (
+                            {errors.id && (
                                 <div className="text-red-400 font-semibold capitalize mt-2">
-                                    {errors?.email?.message}
+                                    {errors?.id?.message}
                                 </div>
                             )}
                         </div>
