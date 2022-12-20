@@ -161,8 +161,8 @@ export default function Variant({
                     <div className="flex gap-1">
                         <input type="text" {...register("quantity", { required: true })} placeholder="Jumlah" className="input input-bordered input-md w-full " />
                         {errors.quantity && <span className="text-xs text-red-700 mt-1 font-semibold">This field is required</span>}
-                        <button type="button" className="btn btn-primary" onClick={handleAdd}>+</button>
                         <button type="button" className="btn btn-secondary" onClick={handleSub}>-</button>
+                        <button type="button" className="btn btn-primary" onClick={handleAdd}>+</button>
                     </div>
                 </div>
                 <div className="form-control">
