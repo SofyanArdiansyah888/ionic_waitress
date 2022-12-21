@@ -4,7 +4,7 @@ import { useLogin } from "../../hooks/useAuth";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { DatabaseService } from "../../services/database.service";
-import { useIonAlert } from "@ionic/react";
+import { IonContent, IonRefresher, IonRefresherContent, RefresherEventDetail, useIonAlert } from "@ionic/react";
 import { useUsers } from "../../hooks/useUser";
 const schema = yup.object({
     id: yup.number().required().typeError('SIlahkan Pilih User'),
@@ -31,7 +31,7 @@ const Login: React.FC = () => {
             presentAlert('Silahkan Cek Koneksi Anda !')
     }
     const { mutate } = useLogin(onSuccess, onError);
-    const {data: users} = useUsers();
+    const {data: users,refetch,isRefetching} = useUsers();
 
     const {
         register,
@@ -46,9 +46,19 @@ const Login: React.FC = () => {
     const handleLogin = (data: any) => {
         mutate(data)
     }
+
+    function handleRefresh(event: CustomEvent<RefresherEventDetail>) {
+        refetch()
+        
+        event.detail.complete();
+      }
     
     return (
+        <IonContent>
         <div className="h-screen w-full items-center flex bg-gray-50 ">
+        <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
+          <IonRefresherContent></IonRefresherContent>
+        </IonRefresher>
             <div className="card w-full md:w-1/3  mx-auto ">
 
                 <div className="card-body gap-6">
@@ -106,6 +116,7 @@ const Login: React.FC = () => {
                 </div>
             </div>
         </div>
+        </IonContent>
     );
 };
 

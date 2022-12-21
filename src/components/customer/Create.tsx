@@ -11,7 +11,6 @@ interface CreateProps {
 
 export const Create = ({ setSelectedCustomer, setCustomerModalOpen }: CreateProps) => {
     const queryClient = useQueryClient()
-    const [ dismiss] = useIonLoading();
     const { register, handleSubmit, formState: { errors } } = useForm();
     
     const {mutate} = useCreateCustomer((data:any) => {
@@ -23,7 +22,6 @@ export const Create = ({ setSelectedCustomer, setCustomerModalOpen }: CreateProp
             customer_email: customer?.email,
         })
         queryClient.invalidateQueries({queryKey:['customers']})
-        dismiss()
         setCustomerModalOpen(false)
     });
     
