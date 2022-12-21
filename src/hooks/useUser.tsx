@@ -6,7 +6,7 @@ const apiService = new ApiService();
 export function useUsers() {
     const [present] =  useIonAlert();
   function fetchUser() {
-    return apiService.get(`users?role=WAITRES`);
+    return apiService.get(`users?role=WAITRESS`);
   }
   return useQuery(["users"], fetchUser, {
     onError: () => {

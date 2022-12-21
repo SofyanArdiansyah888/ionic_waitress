@@ -173,7 +173,7 @@ export default function Variant({
 
                 <div className="form-control flex flex-row gap-6">
                     <button className="btn btn-outline btn-md flex-1">Tambah Item</button>
-                    <button className="btn btn-primary btn-md flex-1" onClick={() => setVariantModal(false)}>Kembali</button>
+                    <button type="button" className="btn btn-primary btn-md flex-1" onClick={() => setVariantModal(false)}>Kembali</button>
                 </div>
             </div>
         </form>
