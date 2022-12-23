@@ -12,8 +12,8 @@ interface CreateProps {
 export const Create = ({ setSelectedCustomer, setCustomerModalOpen }: CreateProps) => {
     const queryClient = useQueryClient()
     const { register, handleSubmit, formState: { errors } } = useForm();
-    
-    const {mutate} = useCreateCustomer((data:any) => {
+
+    const { mutate, isLoading: isCreateCustomer } = useCreateCustomer((data: any) => {
         const customer = data?.data?.data;
         setSelectedCustomer({
             customer_id: customer?.id,
@@ -21,10 +21,10 @@ export const Create = ({ setSelectedCustomer, setCustomerModalOpen }: CreateProp
             customer_phone: customer?.phone,
             customer_email: customer?.email,
         })
-        queryClient.invalidateQueries({queryKey:['customers']})
+        queryClient.invalidateQueries({ queryKey: ['customers'] })
         setCustomerModalOpen(false)
     });
-    
+
     return (
         <form onSubmit={handleSubmit((data) => mutate(data))}>
             <div className="m-4 flex flex-col gap-6">
@@ -39,7 +39,7 @@ export const Create = ({ setSelectedCustomer, setCustomerModalOpen }: CreateProp
                     <input type="text" placeholder="Telepon" {...register("phone")} className="input input-bordered input-md w-full " />
                 </div>
                 <div className="form-control">
-                    <button className="btn btn-outline btn-sm">Tambah Customer</button>
+                    <button className="btn btn-outline btn-sm" disabled={isCreateCustomer}>Tambah Customer</button>
                 </div>
             </div>
         </form>

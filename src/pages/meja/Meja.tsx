@@ -66,7 +66,7 @@ export default function Meja() {
   }
   const { isFetching } = useOrderTable(tableId, handleGetData)
 
-  const mutation = useCreateOrder()
+  const {mutate, isLoading:isCreateOrder} = useCreateOrder()
 
   const handleSimpan = async () => {
     if (selectedCustomer.customer_id && selectedMenu.length > 0) {
@@ -81,7 +81,7 @@ export default function Meja() {
         order_id: selectedOrderId,
         product: selectedMenu
       }
-      mutation.mutate({ tempData, tableId })
+      mutate({ tempData, tableId })
     } else {
       presentAlert({
         header: 'Silahkan lengkapi data customer dan menu terlebih dahulu !',
@@ -134,7 +134,7 @@ export default function Meja() {
         isOrdered={isOrdered}
       />
       <div className="container mx-auto h-screen overflow-scroll pb-32 ">
-        {(isFetching || mutation.isLoading) && <SkeletonList />}
+        {(isFetching || isCreateOrder) && <SkeletonList />}
         {
           filterData().length === 0 && !isFetching ? <EmptyBox /> : null
         }
@@ -176,7 +176,7 @@ export default function Meja() {
 
       </div>
       <div className="absolute bottom-0 w-full px-4 py-2 text-center bg-base-100 flex gap-2 z-50">
-        <button className=" btn btn-primary flex-1 " onClick={handleSimpan}>Simpan</button>
+        <button className=" btn btn-primary flex-1 " onClick={handleSimpan} disabled={isCreateOrder}>Simpan</button>
         <button className=" btn btn-outline flex-1 " onClick={() => {
 
           if (selectedCustomer.customer_id) {
