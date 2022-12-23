@@ -106,9 +106,6 @@ export default function Variant({
             }
         }
 
-        // let menus = selectedMenu.map((menu: any) => {
-        //     if(menu.product_id === selectedProduct.id && menu.variant_id)
-        // });
 
         presentToast({
             message: 'Item Telah Ditambahkan!',

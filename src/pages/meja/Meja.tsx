@@ -158,11 +158,11 @@ export default function Meja() {
                 </button>
               </div>
               <div className="absolute left-2 bottom-2">
-                {/* {!product?.created_at && */}
+                {!product?.created_at &&
                   <button className="items-center btn btn-error btn-sm text-white" onClick={() => handleDelete(product)}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>
                   </button>
-                  {/* } */}
+                  }
               </div>
 
               <p className="absolute right-2 top-2 text-sm font-medium">{formatRupiah(product?.item_price ?? 0, 'Rp.')}</p>

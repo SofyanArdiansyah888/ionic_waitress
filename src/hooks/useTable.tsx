@@ -1,5 +1,5 @@
 import { useIonAlert } from "@ionic/react";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient, useMutation } from "react-query";
 import { ApiService } from "../services/api.service";
 
 const apiService = new ApiService();
@@ -16,3 +16,20 @@ export function useTables() {
     })
 
 }
+
+export function useUpdateTables() {
+    const queryClient = useQueryClient();
+    const [present] =  useIonAlert();
+    
+    function updateTable({ id, ...data } : any) {
+      return apiService.put(`tables/${id}`, data);
+    }
+    return useMutation(updateTable, {
+      onSuccess: (data) => {
+        queryClient.invalidateQueries({ queryKey: ["tables"] });
+      },
+      onError: () => {
+        present('Silahkan Cek Koneksi Anda !')
+    },
+    });
+  }
