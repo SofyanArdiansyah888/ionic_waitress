@@ -1,4 +1,4 @@
-import { IonModal, useIonAlert } from "@ionic/react";
+import { IonContent, IonModal, IonRefresher, IonRefresherContent, RefresherEventDetail, useIonAlert } from "@ionic/react";
 import { ChangeEventHandler, Dispatch, Key, SetStateAction, useState } from "react";
 import { useHistory } from "react-router";
 import { useParams } from 'react-router-dom';
@@ -64,9 +64,9 @@ export default function Meja() {
       customer_phone: data?.customer?.phone,
     })
   }
-  const { isFetching } = useOrderTable(tableId, handleGetData)
+  const { isFetching, refetch } = useOrderTable(tableId, handleGetData)
 
-  const {mutate, isLoading:isCreateOrder} = useCreateOrder()
+  const { mutate, isLoading: isCreateOrder } = useCreateOrder()
 
   const handleSimpan = async () => {
     if (selectedCustomer.customer_id && selectedMenu.length > 0) {
@@ -126,83 +126,91 @@ export default function Meja() {
 
   return (
     <>
-      <SearchBar handleChange={(event) => {
-        setSearch(event.target.value)
-      }}
-        setCustomerModalOpen={setCustomerModalOpen}
-        selectedCustomer={selectedCustomer}
-        isOrdered={isOrdered}
-      />
-      <div className="container mx-auto h-screen overflow-scroll pb-32 ">
-        {(isFetching || isCreateOrder) && <SkeletonList />}
-        {
-          filterData().length === 0 && !isFetching ? <EmptyBox /> : null
-        }
-
-        {!isFetching && <>{filterData().map((product: any, index: Key | null | undefined) =>
-          <>
-            <div key={index} className=' flex flex-row gap-4 relative m-2 bg-gray-50 rounded-md p-2 min-h-[130px]'>
-
-              <div className="text-left">
-                <h6 className='font-semibold text-md capitalize'>{product?.product_name}</h6>
-                <p className='text-xs  rounded-md  mt-1 capitalize'>{product?.variant_name ? product?.variant_name : "-"}</p>
-                <p className='text-xs  rounded-md  mt-1'>{product?.description}</p>
-              </div>
-              <div className="absolute flex gap-2 text-red-400 right-2 bottom-2 text-sm font-medium z-50" >
-                <input placeholder="0" className=" w-16 h-auto input input-bordered input-sm" disabled value={product.quantity} />
-                <button className="btn btn-terniary btn-sm" onClick={() => handleSubQuantity(product)}>
-                  -
-                </button>
-                <button className="btn btn-primary btn-sm" onClick={() => handleAddQuantity(product)}>
-                  +
-                </button>
-              </div>
-              <div className="absolute left-2 bottom-2">
-                {!product?.created_at &&
-                  <button className="items-center btn btn-error btn-sm text-white" onClick={() => handleDelete(product)}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>
-                  </button>
-                  }
-              </div>
-
-              <p className="absolute right-2 top-2 text-sm font-medium">{formatRupiah(product?.item_price ?? 0, 'Rp.')}</p>
-            </div>
-          </>
-        )}
-          {/* <div className="text-right text-sm font-semibold mr-8">Total Payment: {formatRupiah(0,'Rp.')}</div>
-        <div className="text-right text-sm font-semibold mr-8">Total Quantity: 0</div> */}
-        </>
-        }
-
-      </div>
-      <div className="absolute bottom-0 w-full px-4 py-2 text-center bg-base-100 flex gap-2 z-50">
-        <button className=" btn btn-primary flex-1 " onClick={handleSimpan} disabled={isCreateOrder}>Simpan</button>
-        <button className=" btn btn-outline flex-1 " onClick={() => {
-
-          if (selectedCustomer.customer_id) {
-            setMenuModalOpen(true)
-          } else {
-            presentAlert({
-              header: 'Silahkan lengkapi data customer terlebih dahulu !',
-              buttons: ['OK']
-            })
+      <IonContent>
+        <IonRefresher slot="fixed" onIonRefresh={(event: CustomEvent<RefresherEventDetail>) => {
+          refetch()
+          event.detail.complete();
+        }}>
+          <IonRefresherContent></IonRefresherContent>
+        </IonRefresher>
+        <SearchBar handleChange={(event) => {
+          setSearch(event.target.value)
+        }}
+          setCustomerModalOpen={setCustomerModalOpen}
+          selectedCustomer={selectedCustomer}
+          isOrdered={isOrdered}
+        />
+        <div className="container mx-auto h-screen overflow-scroll pb-32 ">
+          {(isFetching || isCreateOrder) && <SkeletonList />}
+          {
+            filterData().length === 0 && !isFetching ? <EmptyBox /> : null
           }
 
-        }}>Tambah</button>
-      </div>
-      <IonModal isOpen={customerModalOpen}>
-        <Customer
-          setCustomerModalOpen={setCustomerModalOpen}
-          setSelectedCustomer={setSelectedCustomer}
-          selectedCustomer={selectedCustomer} />
-      </IonModal>
-      <IonModal isOpen={menuModalOpen}>
-        <Menu
-          setMenuModalOpen={setMenuModalOpen}
-          setSelectedMenu={setSelectedMenu}
-          selectedMenu={selectedMenu}
-        />
-      </IonModal>
+          {!isFetching && <>{filterData().map((product: any, index: Key | null | undefined) =>
+            <>
+              <div key={index} className=' flex flex-row gap-4 relative m-2 bg-gray-50 rounded-md p-2 min-h-[130px]'>
+
+                <div className="text-left">
+                  <h6 className='font-semibold text-md capitalize'>{product?.product_name}</h6>
+                  <p className='text-xs  rounded-md  mt-1 capitalize'>{product?.variant_name ? product?.variant_name : "-"}</p>
+                  <p className='text-xs  rounded-md  mt-1'>{product?.description}</p>
+                </div>
+                <div className="absolute flex gap-2 text-red-400 right-2 bottom-2 text-sm font-medium z-50" >
+                  <input placeholder="0" className=" w-16 h-auto input input-bordered input-sm" disabled value={product.quantity} />
+                  <button className="btn btn-terniary btn-sm" onClick={() => handleSubQuantity(product)}>
+                    -
+                  </button>
+                  <button className="btn btn-primary btn-sm" onClick={() => handleAddQuantity(product)}>
+                    +
+                  </button>
+                </div>
+                <div className="absolute left-2 bottom-2">
+                  {!product?.created_at &&
+                    <button className="items-center btn btn-error btn-sm text-white" onClick={() => handleDelete(product)}>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>
+                    </button>
+                  }
+                </div>
+
+                <p className="absolute right-2 top-2 text-sm font-medium">{formatRupiah(product?.item_price ?? 0, 'Rp.')}</p>
+              </div>
+            </>
+          )}
+            {/* <div className="text-right text-sm font-semibold mr-8">Total Payment: {formatRupiah(0,'Rp.')}</div>
+        <div className="text-right text-sm font-semibold mr-8">Total Quantity: 0</div> */}
+          </>
+          }
+
+        </div>
+        <div className="absolute bottom-0 w-full px-4 py-2 text-center bg-base-100 flex gap-2 z-50">
+          <button className=" btn btn-primary flex-1 " onClick={handleSimpan} disabled={isCreateOrder}>Simpan</button>
+          <button className=" btn btn-outline flex-1 " onClick={() => {
+
+            if (selectedCustomer.customer_id) {
+              setMenuModalOpen(true)
+            } else {
+              presentAlert({
+                header: 'Silahkan lengkapi data customer terlebih dahulu !',
+                buttons: ['OK']
+              })
+            }
+
+          }}>Tambah</button>
+        </div>
+        <IonModal isOpen={customerModalOpen}>
+          <Customer
+            setCustomerModalOpen={setCustomerModalOpen}
+            setSelectedCustomer={setSelectedCustomer}
+            selectedCustomer={selectedCustomer} />
+        </IonModal>
+        <IonModal isOpen={menuModalOpen}>
+          <Menu
+            setMenuModalOpen={setMenuModalOpen}
+            setSelectedMenu={setSelectedMenu}
+            selectedMenu={selectedMenu}
+          />
+        </IonModal>
+      </IonContent>
     </>
   );
 }
