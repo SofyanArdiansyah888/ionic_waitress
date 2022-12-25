@@ -1,9 +1,7 @@
 import { IonContent, IonModal, IonRefresher, IonRefresherContent, RefresherEventDetail, useIonAlert } from "@ionic/react";
-import { ChangeEventHandler, Dispatch, Key, SetStateAction, useState } from "react";
+import { ChangeEventHandler, Key, useState } from "react";
 import { useHistory } from "react-router";
 import { useParams } from 'react-router-dom';
-import Customer from "../../components/customer/Customer";
-import EmptyBox from "../../components/EmptyBox";
 import Menu from "../../components/menu/Menu";
 import SkeletonList from "../../components/SkeletonList";
 import { useCreateOrder, useOrderTable } from "../../hooks/useOrderTable";
@@ -21,8 +19,8 @@ interface Order {
 
 export default function Meja() {
   // CUSTOMER MODAL
-  const [customerModalOpen, setCustomerModalOpen] = useState(false);
-  const [selectedCustomer, setSelectedCustomer] = useState({ customer_id: null, customer_name: '', customer_email: '', customer_phone: '' });
+  // const [customerModalOpen, setCustomerModalOpen] = useState(false);
+  // const [selectedCustomer, setSelectedCustomer] = useState({ customer_id: null, customer_name: '', customer_email: '', customer_phone: '' });
   const [selectedOrderId, setSelectedOrderId] = useState();
 
   // MENU MODAL
@@ -57,30 +55,31 @@ export default function Meja() {
     }
     setSelectedOrderId(data?.id)
     setSelectedMenu([...temp])
-    setSelectedCustomer({
-      customer_id: data?.customer_id,
-      customer_name: data?.customer?.name,
-      customer_email: data?.customer?.email,
-      customer_phone: data?.customer?.phone,
-    })
+    // setSelectedCustomer({
+    //   customer_id: data?.customer_id,
+    //   customer_name: data?.customer?.name,
+    //   customer_email: data?.customer?.email,
+    //   customer_phone: data?.customer?.phone,
+    // })
   }
   const { isFetching, refetch } = useOrderTable(tableId, handleGetData)
 
   const { mutate, isLoading: isCreateOrder } = useCreateOrder()
 
   const handleSimpan = async () => {
-    if (selectedCustomer.customer_id && selectedMenu.length > 0) {
+    if (selectedMenu.length > 0) {
       const tempData: any = {
-        customer_id: selectedCustomer.customer_id,
-        customer_name: selectedCustomer?.customer_name,
-        customer_email: selectedCustomer?.customer_email,
-        customer_phone: selectedCustomer?.customer_phone,
+        // customer_id: selectedCustomer.customer_id,
+        // customer_name: selectedCustomer?.customer_name,
+        // customer_email: selectedCustomer?.customer_email,
+        // customer_phone: selectedCustomer?.customer_phone,
         table_id: tableId,
         total_item: 0,
         total_payment: 0,
         order_id: selectedOrderId,
         product: selectedMenu
       }
+
       mutate({ tempData, tableId })
     } else {
       presentAlert({
@@ -136,14 +135,16 @@ export default function Meja() {
         <SearchBar handleChange={(event) => {
           setSearch(event.target.value)
         }}
-          setCustomerModalOpen={setCustomerModalOpen}
-          selectedCustomer={selectedCustomer}
+          // setCustomerModalOpen={setCustomerModalOpen}
+          // selectedCustomer={selectedCustomer}
           isOrdered={isOrdered}
         />
         <div className="container mx-auto h-screen overflow-scroll pb-32 ">
           {(isFetching || isCreateOrder) && <SkeletonList />}
           {
-            filterData().length === 0 && !isFetching ? <EmptyBox /> : null
+            filterData().length === 0 && !isFetching ? <div className="card  justify-center text-center text-xl my-2 mx-2 w-auto rounded-lg h-[90px] bg-gray-100">
+              Silahkan Tambah Menu
+            </div> : null
           }
 
           {!isFetching && <>{filterData().map((product: any, index: Key | null | undefined) =>
@@ -186,23 +187,23 @@ export default function Meja() {
           <button className=" btn btn-primary flex-1 " onClick={handleSimpan} disabled={isCreateOrder}>Simpan</button>
           <button className=" btn btn-outline flex-1 " onClick={() => {
 
-            if (selectedCustomer.customer_id) {
-              setMenuModalOpen(true)
-            } else {
-              presentAlert({
-                header: 'Silahkan lengkapi data customer terlebih dahulu !',
-                buttons: ['OK']
-              })
-            }
+            // if (selectedCustomer.customer_id) {
+            setMenuModalOpen(true)
+            // } else {
+            //   presentAlert({
+            //     header: 'Silahkan lengkapi data customer terlebih dahulu !',
+            //     buttons: ['OK']
+            //   })
+            // }
 
           }}>Tambah</button>
         </div>
-        <IonModal isOpen={customerModalOpen}>
+        {/* <IonModal isOpen={customerModalOpen}>
           <Customer
             setCustomerModalOpen={setCustomerModalOpen}
             setSelectedCustomer={setSelectedCustomer}
             selectedCustomer={selectedCustomer} />
-        </IonModal>
+        </IonModal> */}
         <IonModal isOpen={menuModalOpen}>
           <Menu
             setMenuModalOpen={setMenuModalOpen}
@@ -216,12 +217,12 @@ export default function Meja() {
 }
 interface SearchBarProps {
   handleChange: ChangeEventHandler<HTMLInputElement>;
-  setCustomerModalOpen: Dispatch<SetStateAction<boolean>>,
+  // setCustomerModalOpen: Dispatch<SetStateAction<boolean>>,
   isOrdered: Boolean,
-  selectedCustomer: any | null
+  // selectedCustomer: any | null
 }
 
-const SearchBar = ({ handleChange, setCustomerModalOpen, selectedCustomer, isOrdered }: SearchBarProps) => {
+const SearchBar = ({ handleChange, isOrdered }: SearchBarProps) => {
 
   const history = useHistory()
 
@@ -238,14 +239,14 @@ const SearchBar = ({ handleChange, setCustomerModalOpen, selectedCustomer, isOrd
           onChange={handleChange} />
 
 
-        <label tabIndex={0} className="btn btn-ghost btn-circle text-gray-500" onClick={() => {
+        {/* <label tabIndex={0} className="btn btn-ghost btn-circle text-gray-500" onClick={() => {
           if (!isOrdered) setCustomerModalOpen(true)
         }
         }>
           <div className={`indicator ${!selectedCustomer.customer_id && "text-red-900"}`}  >
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><path d="M17 18a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2"></path><rect x="3" y="4" width="18" height="18" rx="2"></rect><circle cx="12" cy="10" r="2"></circle><line x1="8" y1="2" x2="8" y2="4"></line><line x1="16" y1="2" x2="16" y2="4"></line></svg>
           </div>
-        </label>
+        </label> */}
       </div>
 
     </div>
