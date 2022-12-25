@@ -98,7 +98,7 @@ const HomeButton = ({ user, item }: HomeButtonProps) => {
           <ul tabIndex={0} className="dropdown-content menu p-1 shadow bg-base-100 rounded-md mt-2 uppercase">
             <li onClick={() => updateTable({
               id: item.id,
-              status: 'CLOSE'
+              status: 'CLOSED'
             })}>CLOSE</li>
           </ul>
         </div>
